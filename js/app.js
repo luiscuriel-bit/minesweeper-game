@@ -5,6 +5,9 @@ const levels = {
     intermediate: { size: 16, mines: 40 },
     advanced: { size: 30, mines: 99 },
 };
+const adjacentPositions = [[-1, -1], [-1, 0], [-1, 1],
+                            [0, -1],           [0, 1],
+                            [1, -1],  [1, 0],  [1, 1]];
 
 /*---------- Variables (state) ---------*/
 
@@ -26,6 +29,8 @@ function initialize() {
     countAdjacentMines();
     render();
 }
+
+function render() { } // Update the DOM to display the current state of the board
 
 function createBoard() {
     boardElement.innerHTML = '';
@@ -64,10 +69,6 @@ function addMines() {
 
 // Calculate the number of adjacent mines for the given cell and update the cell value    
 function countAdjacentMines() {
-    const adjacentPositions = [[-1, -1], [-1, 0], [-1, 1],
-                                [0, -1],           [0, 1],
-                                [1, -1],  [1, 0],  [1, 1]];
-
     for (let i = 0; i < levelConfig.size; i++) {
         for (let j = 0; j < levelConfig.size; j++) {
             if (board[i][j] == '*') continue;
@@ -78,16 +79,58 @@ function countAdjacentMines() {
                 if (rowToCheck < 0 || rowToCheck >= levelConfig.size ||
                     colToCheck < 0 || colToCheck >= levelConfig.size)
                     continue;
-                if (board[rowToCheck][colToCheck] == '*')
+                if (board[rowToCheck][colToCheck] === '*')
                     mineCount++;
             }
-            document.getElementById(`${i}-${j}`).textContent = mineCount;
+            if (mineCount)
+                board[i][j] = mineCount;
         }
     }
 }
-function render() { } // Update the DOM to display the current state of the board
+
+function handleTileClick(event) {
+    const clickedTile = event.target;
+    const [row, col] = clickedTile.id.split('-').map(Number);
+
+    if (!isGameOver) {
+        if (board[row][col] === '*') {
+            isGameOver = true;
+            revealMines();
+        }
+        else
+            revealTile(row, col);
+    }
+}
+
+function revealTile(row, col) {
+    if (row < 0 || row >= levelConfig.size ||
+        col < 0 || col >= levelConfig.size)
+        return;
+
+    const tile = document.getElementById(`${row}-${col}`);
+    if (tile.classList.contains("revealed"))
+        return;
+
+    tile.classList.add("revealed");
+    tile.textContent = board[row][col];
+
+    if (board[row][col] === '') {
+        for (let posToReveal of adjacentPositions)
+            revealTile(row + posToReveal[0], col + posToReveal[1]);
+    }
+}
+
+function revealMines() {
+    for (let posToReveal of minesLocation) {
+        let tile = document.getElementById(`${posToReveal[0]}-${posToReveal[1]}`);
+        tile.textContent = '*';
+        tile.classList.add("mine");
+    }
+}
+
 
 initialize();
 
 // /*----------- Event Listeners ----------*/
 
+boardElement.addEventListener("click", handleTileClick);

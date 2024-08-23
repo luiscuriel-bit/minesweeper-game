@@ -38,6 +38,14 @@ header {
     cursor: pointer;
 }
 
+.revealed {
+    background-color: darkgray;
+}
+
+.mine {
+    background-color: red;
+}
+
 #game-info {
     display: flex;
     flex-direction: row;
