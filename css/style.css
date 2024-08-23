@@ -5,7 +5,7 @@
 }
 
 body {
-    background-color: gainsboro;
+    background-color: rgb(99, 87, 87);
 }
 
 main {
@@ -43,6 +43,7 @@ header {
 }
 
 .mine {
+    background-image: url("https://pngimg.com/uploads/bomb/bomb_PNG21.png");
     background-color: red;
 }
 
@@ -61,4 +62,5 @@ header {
     align-items: center;
     width: 80vh;
     height: 80vh;
+    border: 1vh solid #201f21;
 }

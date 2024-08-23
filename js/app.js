@@ -11,22 +11,27 @@ const adjacentPositions = [[-1, -1], [-1, 0], [-1, 1],
 
 /*---------- Variables (state) ---------*/
 
-let isGameOver = false; // Boolean 
-let board = []; //  array representing the game board
-let score = 0; // Keeps track of revealed empty cells
+let isGameOver; // Boolean 
+let board; //  array representing the game board
+let score; // Keeps track of revealed empty cells
 let minesLocation = []; // 2D Array containing the indexes of the mines' locations
-let levelConfig = levels.beginner; // Difficulty level chosen by the user
+let levelConfig = levels.intermediate; // Difficulty level chosen by the user
 
 /*----- Cached Element References  -----*/
 
 const boardElement = document.getElementById('game-board');
+const scoreElement = document.getElementById("score");
 
 /*-------------- Functions -------------*/
 
 function initialize() {
+    isGameOver = false;
+    minesLocation = [];
+    score = 0;
     createBoard();
     addMines();
     countAdjacentMines();
+    updateScore();
     render();
 }
 
@@ -111,6 +116,8 @@ function revealTile(row, col) {
     if (tile.classList.contains("revealed"))
         return;
 
+    score++;
+    updateScore();
     tile.classList.add("revealed");
     tile.textContent = board[row][col];
 
@@ -128,9 +135,25 @@ function revealMines() {
     }
 }
 
+function updateScore(){
+    scoreElement.textContent = score;
+}
+
+function checkWinCondition(){
+    const revealedTiles = document.querySelectorAll(".tile.revealed").length();
+    const totalTiles = levelConfig.size**2;
+    tilesWithoutMinesMines = totalTiles - revealedTiles;
+    if (tilesWithoutMinesMines == minesLocation.length)
+        console.log("Ganaste")
+    
+}
 
 initialize();
 
 // /*----------- Event Listeners ----------*/
 
 boardElement.addEventListener("click", handleTileClick);
+document.getElementById("reset").addEventListener("click", ()=>{
+    initialize();
+
+})
