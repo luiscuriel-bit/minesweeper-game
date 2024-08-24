@@ -32,7 +32,7 @@ const finalScore = document.getElementById("final-score");
 const levelSelector = document.getElementById("level-selector");
 const revealSound = new Audio("/sounds/pop.mp3");
 const mineSound = new Audio("/sounds/mine.mp3");
-
+const winSound = new Audio("/sounds/win.mp3");
 
 /*-------------- Functions -------------*/
 
@@ -40,7 +40,7 @@ function initialize() {
     isGameOver = false;
     minesLocation = [];
     score = 0;
-    if (levelConfig){
+    if (levelConfig) {
         createBoard();
         addMines();
         countAdjacentMines();
@@ -83,24 +83,24 @@ function render() {
 } // Update the DOM to display the current state of the board/
 function createBoard() {
 
-boardElement.innerHTML = '';
+    boardElement.innerHTML = '';
 
-board = new Array(levelConfig.size).fill();
-board = board.map(() => new Array(levelConfig.size).fill(''));
+    board = new Array(levelConfig.size).fill();
+    board = board.map(() => new Array(levelConfig.size).fill(''));
 
-for (let rowIndex = 0; rowIndex < levelConfig.size; rowIndex++) {
-    const rowDiv = document.createElement("div");
-    rowDiv.classList.add("row");
-    rowDiv.style.height = `calc(100% / ${levelConfig.size})`;
+    for (let rowIndex = 0; rowIndex < levelConfig.size; rowIndex++) {
+        const rowDiv = document.createElement("div");
+        rowDiv.classList.add("row");
+        rowDiv.style.height = `calc(100% / ${levelConfig.size})`;
 
-    for (let colIndex = 0; colIndex < levelConfig.size; colIndex++) {
-        const tile = document.createElement("div");
-        tile.classList.add("tile");
-        tile.id = `${rowIndex}-${colIndex}`
-        rowDiv.appendChild(tile);
+        for (let colIndex = 0; colIndex < levelConfig.size; colIndex++) {
+            const tile = document.createElement("div");
+            tile.classList.add("tile");
+            tile.id = `${rowIndex}-${colIndex}`
+            rowDiv.appendChild(tile);
+        }
+        boardElement.appendChild(rowDiv);
     }
-    boardElement.appendChild(rowDiv);
-}
 }
 
 // Randomly place mines on the board and saves their locations in minesLocation
@@ -158,9 +158,9 @@ function handleLevelSelection(event) {
 
 function handleTileClick(event) {
     const clickedTile = event.target;
-    if (clickedTile.id !== "game-board"){
+    if (clickedTile.id !== "game-board") {
         const [row, col] = clickedTile.id.split('-').map(Number);
-        
+
         if (!isGameOver) {
             if (board[row][col] === '*') {
                 isGameOver = true;
@@ -168,9 +168,9 @@ function handleTileClick(event) {
                 revealMines();
             }
             else
-            revealTile(row, col);
+                revealTile(row, col);
+        }
     }
-}
 }
 
 function revealTile(row, col) {
@@ -210,7 +210,7 @@ function revealMines() {
 }
 
 function updateScore() {
-    scoreElement.textContent = score;
+    scoreElement.textContent = `Score ${score}`;
 }
 
 function getTileColor(minesCount) {
@@ -233,7 +233,7 @@ function checkWinCondition() {
     const tilesWithoutMines = totalTiles - levelConfig.mines;
     if (tilesWithoutMines === revealedTiles) {
         isGameOver = true;
-        displayGameOver(true);
+        setTimeout(() => displayGameOver(true), 2000);
     }
 
 }
@@ -244,8 +244,10 @@ function displayGameOver(playerHasWon) {
     gameOverElement.style.flexDirection = "column";
     gameOverElement.style.justifyContent = "space-evenly";
     gameOverElement.style.alignContent = "center";
-    if (playerHasWon)
+    if (playerHasWon) {
+        winSound.play();
         gameOverMessage.textContent = "YOU WIN!";
+    }
     else
         gameOverMessage.textContent = "YOU LOSE!";
     finalScore.textContent = "Your score is " + score;

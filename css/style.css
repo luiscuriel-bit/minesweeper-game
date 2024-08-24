@@ -1,15 +1,37 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=VT323&display=swap');
+
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
 
-h1 {
-    font-size: 6vw;
+body {
+    background-color: #191970;
 }
 
-body {
-    background-color: rgb(99, 87, 87);
+
+header {
+    font-family: "VT323", monospace;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+h1 {
+    font-size: 6vw;
+    color: #00FF00;
+}
+
+h2 {
+    font-size: 3rem;
+}
+
+p,
+button {
+    font-family: "Roboto", Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 1.2rem;
 }
 
 main {
@@ -18,11 +40,15 @@ main {
     align-items: center;
 }
 
-header {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    align-items: center;
+button {
+    padding: 12px;
+    background-color: blue;
+    color: wheat;
+    border-radius: 10px;
+}
+
+button:hover {
+    background-color: darkblue;
 }
 
 .row {
@@ -42,7 +68,7 @@ header {
 }
 
 .mine {
-    background-image: url("../images/bomb.png");
+    background-image: url("../images/mine.png");
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
@@ -50,6 +76,7 @@ header {
 }
 
 #game-info {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
     display: none;
     flex-direction: row;
     justify-content: space-around;
@@ -79,6 +106,7 @@ header {
         height: 80vw;
     }
 }
+
 #instructions {
     display: flex;
     flex-direction: column;
@@ -93,24 +121,11 @@ header {
     text-align: center;
 }
 
-h2 {
-    font-size: 2rem;
-}
-
-p {
-    font-size: 1.2rem;
-}
-
 #start-game {
     padding: 10px 20px;
-    background-color: blue;
     color: white;
     border-radius: 5px;
     cursor: pointer;
-}
-
-#start-game:hover {
-    background-color: darkblue;
 }
 
 #level-selector {
@@ -118,26 +133,33 @@ p {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
+    gap: 10%;
+    width: 80%;
+    height: 60vh;
+    background-color: rgba(144, 158, 146, 0.8);
     color: white;
-}
-
-#level-selector button {
-    margin: 10px;
-    padding: 10px 20px;
-    background-color: blue;
-    color: white;
-    cursor: pointer;
+    border-radius: 15px;
 }
 
 #game-over {
     display: none;
+    justify-content: center;
+    align-items: center;
+    font-family: "VT323", monospace;
     width: 80vh;
     height: 80vh;
     text-align: center;
     background-color: rgba(0, 0, 0, 0.9);
+    border-radius: 15px;
+}
+
+#game-over button {
+    font-family: "VT323", monospace;
+    font-size: 3rem;
+    color: red;
+    background-color: grey;
+    width: 50%;
+    border: 0;
 }
 
 #game-over-message {
@@ -146,21 +168,21 @@ p {
     border-radius: 10px;
     text-align: center;
     color: white;
-    font-size: 2rem;
+    font-size: 8rem;
+}
+
+#score {
+    color: wheat;
+    text-align: center;
 }
 
 #final-score {
+    font-family: "VT323", monospace;
     color: antiquewhite;
+    font-size: 3rem;
 }
 
-main button {
-    background-color: blue;
-}
-
-button:hover {
-    background-color: lightblue;
-}
-
-#instructions{
+#instructions {
+    font-family: "VT323", monospace;
     display: flex;
 }
