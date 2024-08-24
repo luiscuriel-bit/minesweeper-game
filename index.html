@@ -14,12 +14,25 @@
         <h1>Minesweeper</h1>
         <div id="game-info">
             <p>Score <span id="score">0</span></p>
-            <p>Time <span id="time">0</span></p>
             <button class="reset-game">Reset</button>
+        </div>
+        <div id="instructions">
+            <h2>Instructions</h2>
+            <p>1. Click on a cell to reveal its content.</p>
+            <p>2. If you click on a mine, the game ends and all mines are revealed.</p>
+            <p>3. The number in each cell indicates the number of adjacent mines.</p>
+            <p>4. If you reveal all cells without mines, you win!</p>
+            <button id="start-game">Start Game</button>
         </div>
     </header>
 
     <main>
+        <div id="level-selector">
+            <button id="beginner">Beginner</button>
+            <button id="intermediate">Intermediate</button>
+            <button id="advanced">Advanced</button>
+        </div>
+
         <div id="game-board"></div>
         <div id="game-over">
             <h2 id="game-over-message"></h2>
