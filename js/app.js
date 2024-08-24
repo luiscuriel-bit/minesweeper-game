@@ -15,12 +15,17 @@ let isGameOver; // Boolean
 let board; //  array representing the game board
 let score; // Keeps track of revealed empty cells
 let minesLocation = []; // 2D Array containing the indexes of the mines' locations
-let levelConfig = levels.intermediate; // Difficulty level chosen by the user
+let levelConfig = levels.beginner; // Difficulty level chosen by the user
 
 /*----- Cached Element References  -----*/
 
+const gameInfo = document.getElementById("game-info");
 const boardElement = document.getElementById('game-board');
 const scoreElement = document.getElementById("score");
+const resetBtns = document.querySelectorAll(".reset-game");
+const gameOverElement = document.getElementById("game-over");
+const gameOverMessage = document.getElementById("game-over-message");
+const finalScore = document.getElementById("final-score");
 
 /*-------------- Functions -------------*/
 
@@ -28,15 +33,15 @@ function initialize() {
     isGameOver = false;
     minesLocation = [];
     score = 0;
+    boardElement.style.display = "block";
+    gameOverElement.style.display = "none";
     createBoard();
     addMines();
     countAdjacentMines();
     updateScore();
-    render();
 }
 
-function render() { } // Update the DOM to display the current state of the board
-
+function render() { } // Update the DOM to display the current state of the board/ 
 function createBoard() {
     boardElement.innerHTML = '';
 
@@ -101,6 +106,7 @@ function handleTileClick(event) {
         if (board[row][col] === '*') {
             isGameOver = true;
             revealMines();
+            displayGameOver(false);
         }
         else
             revealTile(row, col);
@@ -108,18 +114,25 @@ function handleTileClick(event) {
 }
 
 function revealTile(row, col) {
+    console
     if (row < 0 || row >= levelConfig.size ||
         col < 0 || col >= levelConfig.size)
         return;
 
     const tile = document.getElementById(`${row}-${col}`);
-    if (tile.classList.contains("revealed"))
+    if (tile.hasAttribute("revealed"))
         return;
 
     score++;
     updateScore();
-    tile.classList.add("revealed");
-    tile.textContent = board[row][col];
+    if (board[row][col] && board[row][col] !== '*') {
+        tile.textContent = board[row][col];
+        tile.style.backgroundColor = getTileColor(board[row][col]);
+    }
+    else
+        tile.style.backgroundColor = "darkgray";
+    tile.setAttribute("revealed", '');
+    checkWinCondition();
 
     if (board[row][col] === '') {
         for (let posToReveal of adjacentPositions)
@@ -130,22 +143,50 @@ function revealTile(row, col) {
 function revealMines() {
     for (let posToReveal of minesLocation) {
         let tile = document.getElementById(`${posToReveal[0]}-${posToReveal[1]}`);
-        tile.textContent = '*';
         tile.classList.add("mine");
     }
 }
 
-function updateScore(){
+function updateScore() {
     scoreElement.textContent = score;
 }
 
-function checkWinCondition(){
-    const revealedTiles = document.querySelectorAll(".tile.revealed").length();
-    const totalTiles = levelConfig.size**2;
-    tilesWithoutMinesMines = totalTiles - revealedTiles;
-    if (tilesWithoutMinesMines == minesLocation.length)
-        console.log("Ganaste")
-    
+function getTileColor(minesCount) {
+    const colors = {
+        1: 'blue',
+        2: 'green',
+        3: 'red',
+        4: 'purple',
+        5: 'maroon',
+        6: 'turquoise',
+        7: 'black',
+        8: 'gray'
+    };
+    return colors[minesCount];
+}
+
+function checkWinCondition() {
+    const revealedTiles = document.querySelectorAll(".tile[revealed]").length;
+    const totalTiles = levelConfig.size ** 2;
+    const tilesWithoutMines = totalTiles - levelConfig.mines;
+    if (tilesWithoutMines === revealedTiles) {
+        isGameOver = true;
+        displayGameOver(true);
+    }
+
+}
+function displayGameOver(playerHasWon) {
+    gameInfo.style.display = "none";
+    boardElement.style.display = "none";
+    gameOverElement.style.display = "flex";
+    gameOverElement.style.flexDirection = "column";
+    gameOverElement.style.justifyContent = "space-evenly";
+    gameOverElement.style.alignContent = "center";
+    if (playerHasWon)
+        gameOverMessage.textContent = "YOU WIN!";
+    else
+        gameOverMessage.textContent = "YOU LOSE!";
+    finalScore.textContent = "Your score is " + score;
 }
 
 initialize();
@@ -153,7 +194,4 @@ initialize();
 // /*----------- Event Listeners ----------*/
 
 boardElement.addEventListener("click", handleTileClick);
-document.getElementById("reset").addEventListener("click", ()=>{
-    initialize();
-
-})
+resetBtns.forEach(btn => btn.addEventListener("click", initialize));
