@@ -5,17 +5,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/style.css">
-    <script defer src="js/app.js"></script>
+    <script type="module" defer src="js/game.js"></script>
     <title>Minesweeper</title>
 </head>
 
 <body>
-    <header>
+    <main id="game-container">
         <h1>Minesweeper</h1>
+
         <div id="game-info">
             <p id="score"></p>
-            <button class="reset-game">Reset</button>
+            <button class="restart-game">Restart</button>
         </div>
+
         <div id="instructions">
             <h2>Instructions</h2>
             <p>1. Click on a cell to reveal its content.</p>
@@ -24,9 +26,7 @@
             <p>4. If you reveal all cells without mines, you win!</p>
             <button id="start-game">Start Game</button>
         </div>
-    </header>
 
-    <main>
         <div id="level-selector">
             <button id="beginner">Beginner</button>
             <button id="intermediate">Intermediate</button>
@@ -37,7 +37,7 @@
         <div id="game-over">
             <h2 id="game-over-message"></h2>
             <p id="final-score"></p>
-            <button class="reset-game">Try again</button>
+            <button class="restart-game">Try again</button>
         </div>
     </main>
 </body>
