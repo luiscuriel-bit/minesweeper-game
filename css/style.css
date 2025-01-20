@@ -93,12 +93,21 @@ button:hover {
 
 .bg-color-8 { --tile-color: gray }
 
+@keyframes shake {
+    0% {transform:  translateX(0);}
+    12.5% {transform:  translateX(-5px);}
+    25% {transform:  translateX(5px);}
+    37.5% {transform:  translateY(5px);}
+    50% {transform:  translateY(-5px);}
+    62.5% {transform:  translateX(5px);}
+    75% {transform:  translateY(-5px);}
+    87.5% {transform:  translateX(-5px);}
+    100% {transform:  translateY(5px);}
+}
+
 .mine {
-    background-image: url("../images/mine.png");
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-color: red;
+    background: red url("../images/mine.png") no-repeat center/contain; 
+    animation: shake .5s ease-in-out;
 }
 
 .dark-mode {
