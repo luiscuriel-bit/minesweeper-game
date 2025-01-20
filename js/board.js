@@ -88,3 +88,11 @@ export function revealMines() {
         tile.classList.add("mine");
     }
 }
+
+export function relocateMine(row, col){
+    while (board[row][col] === '*'){
+        board[row][col] = '';
+        minesLocation.splice(minesLocation.find(mine => mine[0] === row && mine[1] === col), 1);
+        addMines();
+    }
+}

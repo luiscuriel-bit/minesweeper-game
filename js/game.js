@@ -1,4 +1,4 @@
-import { board, createBoard, addMines, countAdjacentMines, minesLocation, revealTile, revealMines } from './board.js';
+import { board, createBoard, addMines, countAdjacentMines, minesLocation, revealTile, revealMines, relocateMine } from './board.js';
 
 const levels = {
     beginner: { size: 9, mines: 10 },
@@ -23,10 +23,12 @@ const mineSound = new Audio("/sounds/mine.mp3");
 let isGameOver;
 let currentView = 'instructions'; // 'level', 'instructions', 'game', 'game-over'
 let score;
+let isFirstMove;
 export let levelConfig;
 
 export function initialize() {
     isGameOver = false;
+    isFirstMove = true;
     minesLocation.splice(0, minesLocation.length)
     if (levelConfig) {
         createBoard();
@@ -34,6 +36,7 @@ export function initialize() {
         countAdjacentMines();
         updateScore(true);
     }
+    boardElement.classList.remove('disabled');
     render();
 }
 
@@ -77,6 +80,7 @@ export function checkWinCondition() {
     const tilesWithoutMines = totalTiles - levelConfig.mines;
     if (tilesWithoutMines === revealedTiles) {
         isGameOver = true;
+        boardElement.classList.add('disabled');
         setTimeout(() => displayGameOver(true), 500);
     }
 }
@@ -134,9 +138,17 @@ function handleTileClick(event) {
 
     if (!isGameOver) {
         if (board[row][col] === '*') {
+            if (isFirstMove){
+                relocateMine(row, col);
+                countAdjacentMines();
+                revealTile(row, col);
+                isFirstMove = false;
+                return;
+            }
             isGameOver = true;
             setTimeout(() => displayGameOver(false), 2000);
             clickedTile.classList.add("mine");
+            boardElement.classList.add('disabled');
             mineSound.play();
             setTimeout(revealMines, 500);
         }
@@ -150,7 +162,6 @@ function toggleTheme() {
     document.body.classList.toggle('dark-mode');
     localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
 }
-
 
 levelSelector.addEventListener("click", handleLevelSelection);
 toggleBtn.addEventListener('click', toggleTheme);

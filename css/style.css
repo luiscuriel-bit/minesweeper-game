@@ -137,6 +137,10 @@ button:hover {
     border-color: #333333;
 }
 
+.disabled{
+    pointer-events: none;
+}
+
 #game-info {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     display: none;
