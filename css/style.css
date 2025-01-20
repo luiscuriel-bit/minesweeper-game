@@ -7,14 +7,25 @@
 }
 
 body {
+    background-color: #F8F9FA;
+    color: #212529;
     font-family: Arial, sans-serif;
     text-align: center;
-    background-color: #F4F4F4;
+    height: 100vh;
+}
+
+main {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 h1 {
+    margin-top: 10px;
     font-family: "VT323", monospace;
-    font-size: 6vw;
+    font-size: 8vw;
     color: #00FF00;
 }
 
@@ -27,19 +38,17 @@ p {
     font-size: 1.2rem;
 }
 
-main {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
 button {
-    background: linear-gradient(135deg, #ff7eb3, #ff758c);
+    background: #4CAF50;
     border: none;
     padding: 10px 20px;
-    margin: 5px;
-    font-size: 20px;
+    margin: 10px;
+    font-family: "Roboto", Verdana, Geneva, Tahoma, sans-serif;
     color: white;
+    font-size: 1.2em;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
     border-radius: 5px;
     cursor: pointer;
     transition: .3s
@@ -60,6 +69,24 @@ button:hover {
     cursor: pointer;
 }
 
+.bg-color-0 { --tile-color: darkgray }
+
+.bg-color-1 { --tile-color: blue }
+
+.bg-color-2 { --tile-color: green }
+
+.bg-color-3 { --tile-color: red }
+
+.bg-color-4 { --tile-color: purple }
+
+.bg-color-5 { --tile-color: maroon }
+
+.bg-color-6 { --tile-color: turquoise }
+
+.bg-color-7 { --tile-color: black }
+
+.bg-color-8 { --tile-color: gray }
+
 .mine {
     background-image: url("../images/mine.png");
     background-size: contain;
@@ -68,47 +95,27 @@ button:hover {
     background-color: red;
 }
 
-.bg-color-0 {
-    --tile-color: darkgray
+.dark-mode {
+    background-color: #121212;
+    color: #EAEAEA;
 }
 
-.bg-color-1 {
-    --tile-color: blue
-}
-
-.bg-color-2 {
-    --tile-color: green
-}
-
-.bg-color-3 {
-    --tile-color: red
-}
-
-.bg-color-4 {
-    --tile-color: purple
-}
-
-.bg-color-5 {
-    --tile-color: maroon
-}
-
-.bg-color-6 {
-    --tile-color: turquoise
-}
-
-.bg-color-7 {
-    --tile-color: black
-}
-
-.bg-color-8 {
-    --tile-color: gray
-}
-
-#game-container {
-    display: flex;
-    flex-direction: column;
+.container {
+    width: 80vh;
+    height: 80vh;
+    background-color: #FFF;
+    justify-content: center;
     align-items: center;
-    margin-top: 20px;
+    margin: auto;
+    border: 2px solid #E0E0E0;
+    border-radius: 15px;
+    text-align: center;
+    font-family: "VT323", monospace;
+}
+
+.dark-mode .container {
+    background-color: #1E1E1E;
+    border-color: #333333;
 }
 
 #game-info {
@@ -125,14 +132,14 @@ button:hover {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    border: 1vh solid #201f21;
+    border: 1vh solid #E0E0E0;
     border-radius: 1%;
 }
 
 @media (orientation: landscape) {
     #game-board {
-        width: 80vh;
-        height: 80vh;
+        width: 75vh;
+        height: 75vh;
     }
 }
 
@@ -144,58 +151,24 @@ button:hover {
 }
 
 #instructions {
-    display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 80vw;
-    height: 80vh;
-    background-color: rgba(255, 255, 255, 0.9);
-    border: 2px solid #201f21;
-    border-radius: 10px;
-    padding: 20px;
-    text-align: center;
-    font-family: "VT323", monospace;
-    display: flex;
-}
-
-#game-board{
-    grid-template-columns: repeat(var(--board-size), 1fr);
-    grid-template-rows: repeat(var(--board-size), 1fr);
-    gap: 2px;
-
 }
 
 #level-selector {
-    display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
     gap: 10%;
-    width: 80%;
-    height: 60vh;
-    background-color: rgba(144, 158, 146, 0.8);
-    color: white;
-    border-radius: 15px;
 }
 
-#game-over {
-    display: none;
-    justify-content: center;
-    align-items: center;
-    font-family: "VT323", monospace;
-    width: 80vh;
-    height: 80vh;
-    text-align: center;
-    background-color: rgba(0, 0, 0, 0.9);
-    border-radius: 15px;
+#game-board {
+    grid-template-columns: repeat(var(--board-size), 1fr);
+    grid-template-rows: repeat(var(--board-size), 1fr);
+    gap: 2px;
 }
 
 #game-over button {
     font-family: "VT323", monospace;
     font-size: 3rem;
-    color: red;
-    background-color: grey;
+    background-color: #DC3545;
     width: 50%;
     border: 0;
 }
@@ -211,6 +184,6 @@ button:hover {
 
 #final-score {
     font-family: "VT323", monospace;
-    color: antiquewhite;
+    color: #EAEAEA;
     font-size: 3rem;
 }

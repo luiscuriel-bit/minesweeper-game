@@ -9,6 +9,7 @@ const levels = {
 export const boardElement = document.getElementById('game-board');
 const startGameBtn = document.getElementById('start-game');
 const restartGameBtns = document.querySelectorAll(".restart-game");
+const toggleBtn = document.getElementById('theme-toggle');
 const levelSelector = document.getElementById("level-selector");
 const gameInfo = document.getElementById("game-info");
 const instructions = document.getElementById("instructions");
@@ -101,7 +102,7 @@ function displayGameOver(playerHasWon) {
     finalScore.textContent = "Your score is " + score;
 }
 
-export function handleLevelSelection(event) {
+function handleLevelSelection(event) {
     switch (event.target.id) {
         case 'beginner':
             levelConfig = levels.beginner;
@@ -119,7 +120,7 @@ export function handleLevelSelection(event) {
     initialize();
 }
 
-export function handleTileClick(event) {
+function handleTileClick(event) {
     const clickedTile = event.target;
     if (clickedTile.id === "game-board") return;
     let { row, col } = clickedTile.dataset;
@@ -139,7 +140,14 @@ export function handleTileClick(event) {
     }
 }
 
+function toggleTheme() {
+    toggleBtn.textContent = toggleBtn.textContent === '☀️' ? '🌙' : '☀️'
+    document.body.classList.toggle('dark-mode');
+    localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+}
+
 levelSelector.addEventListener("click", handleLevelSelection);
+toggleBtn.addEventListener('click', toggleTheme);
 boardElement.addEventListener("click", handleTileClick);
 startGameBtn.addEventListener("click", () => {
     currentView = "level";
@@ -147,4 +155,5 @@ startGameBtn.addEventListener("click", () => {
 });
 restartGameBtns.forEach(btn => btn.addEventListener("click", initialize));
 
+if (localStorage.getItem('theme') === 'dark') toggleTheme();
 initialize();
