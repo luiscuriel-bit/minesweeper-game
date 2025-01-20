@@ -72,12 +72,12 @@ export function render() {
 }
 
 export function checkWinCondition() {
-    const revealedTiles = document.querySelectorAll(".tile[revealed]").length;
+    const revealedTiles = document.querySelectorAll(".tile[data-revealed]").length;
     const totalTiles = levelConfig.size ** 2;
     const tilesWithoutMines = totalTiles - levelConfig.mines;
     if (tilesWithoutMines === revealedTiles) {
         isGameOver = true;
-        setTimeout(() => displayGameOver(true), 2000);
+        setTimeout(() => displayGameOver(true), 500);
     }
 }
 
@@ -96,6 +96,11 @@ function displayGameOver(playerHasWon) {
     if (playerHasWon) {
         winSound.play();
         gameOverMessage.textContent = "YOU WIN!";
+        confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: { y: 0.6 }
+        });
     }
     else
         gameOverMessage.textContent = "YOU LOSE!";
@@ -145,6 +150,7 @@ function toggleTheme() {
     document.body.classList.toggle('dark-mode');
     localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
 }
+
 
 levelSelector.addEventListener("click", handleLevelSelection);
 toggleBtn.addEventListener('click', toggleTheme);
