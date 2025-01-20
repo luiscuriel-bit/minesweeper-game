@@ -67,12 +67,16 @@ button:hover {
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    transition: transform .3s ease-in-out, opacity .8s;
+    transition: transform .5s ease-in-out, opacity .8s;
 }
 
 .tile:hover{
     transform: scale(1.1);
     opacity: .7;
+}
+
+.tile[data-revealed] {
+    transform: rotateY(360deg);
 }
 
 .bg-color-0 { --tile-color: darkgray }
