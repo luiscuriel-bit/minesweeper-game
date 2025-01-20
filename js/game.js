@@ -171,6 +171,13 @@ startGameBtn.addEventListener("click", () => {
     initialize();
 });
 restartGameBtns.forEach(btn => btn.addEventListener("click", initialize));
+boardElement.addEventListener('contextmenu', event => {
+    event.preventDefault();
+    if (event.target.classList.contains('tile') && !event.target.dataset.revealed){
+        event.target.textContent = event.target.textContent === '🚩' ? '' : '🚩';
+    }
+})
 
 if (localStorage.getItem('theme') === 'dark') toggleTheme();
+
 initialize();
