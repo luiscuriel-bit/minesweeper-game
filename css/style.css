@@ -7,7 +7,7 @@
 }
 
 body {
-    background-color: #F8F9FA;
+    background: linear-gradient(180deg, #A1C4FD, #C2E9FB);
     color: #212529;
     font-family: Arial, sans-serif;
     text-align: center;
@@ -26,7 +26,7 @@ h1 {
     margin-top: 10px;
     font-family: "VT323", monospace;
     font-size: 8vw;
-    color: #00FF00;
+    color: #00A600;
 }
 
 h2 {
@@ -70,7 +70,7 @@ button:hover {
     transition: transform .5s ease-in-out, opacity .8s;
 }
 
-.tile:hover{
+.tile:hover {
     transform: scale(1.1);
     opacity: .7;
 }
@@ -79,43 +79,43 @@ button:hover {
     transform: rotateY(360deg);
 }
 
-.bg-color-0 { --tile-color: darkgray }
+.bg-color-0 { --tile-color: darkgray; }
 
-.bg-color-1 { --tile-color: blue }
+.bg-color-1 { --tile-color: blue; }
 
-.bg-color-2 { --tile-color: green }
+.bg-color-2 { --tile-color: green; }
 
-.bg-color-3 { --tile-color: red }
+.bg-color-3 { --tile-color: red; }
 
-.bg-color-4 { --tile-color: purple }
+.bg-color-4 { --tile-color: purple; }
 
-.bg-color-5 { --tile-color: maroon }
+.bg-color-5 { --tile-color: maroon; }
 
-.bg-color-6 { --tile-color: turquoise }
+.bg-color-6 { --tile-color: turquoise; }
 
-.bg-color-7 { --tile-color: black }
+.bg-color-7 { --tile-color: black; }
 
-.bg-color-8 { --tile-color: gray }
+.bg-color-8 { --tile-color: gray; }
 
 @keyframes shake {
-    0% {transform:  translateX(0);}
-    12.5% {transform:  translateX(-5px);}
-    25% {transform:  translateX(5px);}
-    37.5% {transform:  translateY(5px);}
-    50% {transform:  translateY(-5px);}
-    62.5% {transform:  translateX(5px);}
-    75% {transform:  translateY(-5px);}
-    87.5% {transform:  translateX(-5px);}
-    100% {transform:  translateY(5px);}
+    0% { transform: translateX(0); }
+    12.5% { transform: translateX(-5px); }
+    25% { transform: translateX(5px); } 
+    37.5% { transform: translateY(5px); } 
+    50% { transform: translateY(-5px); }
+    62.5% { transform: translateX(5px); } 
+    75% { transform: translateY(-5px); }
+    87.5% { transform: translateX(-5px); }
+    100% { transform: translateY(5px); } 
 }
 
 .mine {
-    background: red url("../images/mine.png") no-repeat center/contain; 
+    background: red url("../images/mine.png") no-repeat center/contain;
     animation: shake .5s ease-in-out;
 }
 
 .dark-mode {
-    background-color: #121212;
+    background: linear-gradient(135deg, #2A3C8C, #1D2A6D);
     color: #EAEAEA;
 }
 
@@ -137,8 +137,9 @@ button:hover {
     border-color: #333333;
 }
 
-.disabled{
+.disabled {
     pointer-events: none;
+    opacity: .8;
 }
 
 #game-info {
@@ -207,6 +208,5 @@ button:hover {
 
 #final-score {
     font-family: "VT323", monospace;
-    color: #EAEAEA;
     font-size: 3rem;
 }

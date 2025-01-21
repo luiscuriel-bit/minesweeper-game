@@ -74,9 +74,8 @@ export function revealTile(row, col) {
     tile.textContent = board[row][col];
     tile.classList.add(`bg-color-${board[row][col] || 0}`);
     tile.dataset.revealed = 'true';
-    checkWinCondition();
 
-    if (board[row][col] === '') {
+    if (!checkWinCondition() && board[row][col] === '') {
         for (let posToReveal of adjacentPositions)
             revealTile(row + posToReveal[0], col + posToReveal[1]);
     }
@@ -85,14 +84,16 @@ export function revealTile(row, col) {
 export function revealMines() {
     for (let posToReveal of minesLocation) {
         let tile = document.getElementById(`${posToReveal[0]}-${posToReveal[1]}`);
+        tile.textContent = '';
+        tile.dataset.revealed = 'true'
         tile.classList.add("mine");
     }
 }
 
-export function relocateMine(row, col){
-    while (board[row][col] === '*'){
+export function relocateMine(row, col) {
+    while (board[row][col] === '*') {
         board[row][col] = '';
-        minesLocation.splice(minesLocation.find(mine => mine[0] === row && mine[1] === col), 1);
+        minesLocation.splice(minesLocation.findIndex(mine => mine[0] === row && mine[1] === col), 1);
         addMines();
     }
 }
