@@ -6,19 +6,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/style.css">
     <script type="module" defer src="js/game.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
     <title>Minesweeper</title>
 </head>
 
 <body>
-    <main id="game-container">
+    <main>
         <h1>Minesweeper</h1>
 
         <div id="game-info">
-            <p id="score"></p>
             <button class="restart-game">Restart</button>
+            <p id="timer">Time: 0 s</p>
+            <p id="high-score">Best: --</p>
+            <p id="score"></p>
+            <button id="theme-toggle">🌙</button>
+            <button id="pause-toggle">Pause</button>
         </div>
 
-        <div id="instructions">
+        <div id="instructions" class="container">
             <h2>Instructions</h2>
             <p>1. Click on a cell to reveal its content.</p>
             <p>2. If you click on a mine, the game ends and all mines are revealed.</p>
@@ -27,14 +32,14 @@
             <button id="start-game">Start Game</button>
         </div>
 
-        <div id="level-selector">
+        <div id="level-selector" class="container">
             <button id="beginner">Beginner</button>
             <button id="intermediate">Intermediate</button>
             <button id="advanced">Advanced</button>
         </div>
 
         <div id="game-board"></div>
-        <div id="game-over">
+        <div id="game-over" class="container">
             <h2 id="game-over-message"></h2>
             <p id="final-score"></p>
             <button class="restart-game">Try again</button>

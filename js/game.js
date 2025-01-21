@@ -1,14 +1,18 @@
-import { board, createBoard, addMines, countAdjacentMines, minesLocation, revealTile, revealMines } from './board.js';
+import { board, createBoard, addMines, countAdjacentMines, minesLocation, revealTile, revealMines, relocateMine } from './board.js';
 
 const levels = {
-    beginner: { size: 9, mines: 10 },
-    intermediate: { size: 16, mines: 40 },
-    advanced: { size: 30, mines: 99 },
+    beginner: { level: 'beginner', size: 9, mines: 10 },
+    intermediate: { level: 'intermediate', size: 16, mines: 40 },
+    advanced: { level: 'advanced', size: 30, mines: 99 },
 };
 
 export const boardElement = document.getElementById('game-board');
 const startGameBtn = document.getElementById('start-game');
 const restartGameBtns = document.querySelectorAll(".restart-game");
+const pauseBtn = document.getElementById('pause-toggle');
+const themeBtn = document.getElementById('theme-toggle');
+const timer = document.getElementById('timer');
+const highScore = document.getElementById('high-score');
 const levelSelector = document.getElementById("level-selector");
 const gameInfo = document.getElementById("game-info");
 const instructions = document.getElementById("instructions");
@@ -22,17 +26,30 @@ const mineSound = new Audio("/sounds/mine.mp3");
 let isGameOver;
 let currentView = 'instructions'; // 'level', 'instructions', 'game', 'game-over'
 let score;
+let isFirstMove;
+let isPaused;
+let time;
+let timerInterval;
 export let levelConfig;
 
 export function initialize() {
     isGameOver = false;
-    minesLocation.splice(0, minesLocation.length)
+    isFirstMove = true;
+    isPaused = false;
+    minesLocation.splice(0, minesLocation.length);
+    time = 0;
+    timer.textContent = 'Time: 0 s';
+    stopTimer();
+    boardElement.classList.remove('disabled');
+    pauseBtn.classList.remove('disabled');
     if (levelConfig) {
         createBoard();
         addMines();
         countAdjacentMines();
         updateScore(true);
+        startTimer();
     }
+
     render();
 }
 
@@ -54,6 +71,8 @@ export function render() {
             gameOverElement.style.display = 'none';
             break;
         case 'game':
+            const localHighScore = JSON.parse(localStorage.getItem('highScore'));
+            highScore.textContent = `Best: ${localHighScore && levelConfig.level in localHighScore ? `${localHighScore[levelConfig.level]} s` : '--'}`;
             levelSelector.style.display = 'none';
             gameInfo.style.display = 'flex';
             instructions.style.display = 'none';
@@ -71,13 +90,17 @@ export function render() {
 }
 
 export function checkWinCondition() {
-    const revealedTiles = document.querySelectorAll(".tile[revealed]").length;
+    const revealedTiles = document.querySelectorAll(".tile[data-revealed]").length;
     const totalTiles = levelConfig.size ** 2;
     const tilesWithoutMines = totalTiles - levelConfig.mines;
     if (tilesWithoutMines === revealedTiles) {
+        stopTimer(true);
         isGameOver = true;
-        setTimeout(() => displayGameOver(true), 2000);
+        boardElement.classList.add('disabled');
+        setTimeout(() => displayGameOver(true), 500);
+        return true;
     }
+    return false;
 }
 
 export function updateScore(reset = false) {
@@ -95,13 +118,50 @@ function displayGameOver(playerHasWon) {
     if (playerHasWon) {
         winSound.play();
         gameOverMessage.textContent = "YOU WIN!";
+        confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: { y: 0.6 }
+        });
     }
     else
         gameOverMessage.textContent = "YOU LOSE!";
-    finalScore.textContent = "Your score is " + score;
+
+    restartGameBtns.forEach(btn => btn.classList.remove('disabled'));
 }
 
-export function handleLevelSelection(event) {
+function startTimer() {
+    timerInterval = setInterval(() => {
+        time++;
+        timer.textContent = `Time: ${time} s`;
+    }, 1000);
+}
+
+function stopTimer(playerHasWon) {
+    clearInterval(timerInterval);
+    if (!playerHasWon) {
+        return;
+    }
+
+    isPaused = true;
+    let localHighScore = localStorage.getItem('highScore');
+    if (localHighScore) {
+        localHighScore = JSON.parse(localHighScore);
+    }
+    else {
+        localHighScore = {};
+    }
+    if (!localHighScore[levelConfig.level] || localHighScore[levelConfig.level] > time) {
+        localHighScore[levelConfig.level] = time;
+        localStorage.setItem('highScore', JSON.stringify(localHighScore));
+        finalScore.textContent = `New High Score! ${time} s`;
+    }
+    else {
+        finalScore.textContent = "Your score is " + score;
+    }
+}
+
+function handleLevelSelection(event) {
     switch (event.target.id) {
         case 'beginner':
             levelConfig = levels.beginner;
@@ -115,36 +175,74 @@ export function handleLevelSelection(event) {
         default:
             return;
     }
+
     currentView = 'game';
     initialize();
 }
 
-export function handleTileClick(event) {
+function handleTileClick(event) {
     const clickedTile = event.target;
-    if (clickedTile.id === "game-board") return;
+    if (clickedTile.id === "game-board" || isGameOver) return;
     let { row, col } = clickedTile.dataset;
-    row = +row
-    col = +col
+    row = Number(row);
+    col = Number(col);
 
-    if (!isGameOver) {
+    if (isFirstMove) {
+        isFirstMove = false;
         if (board[row][col] === '*') {
-            isGameOver = true;
-            setTimeout(() => displayGameOver(false), 2000);
-            clickedTile.classList.add("mine");
-            mineSound.play();
-            setTimeout(revealMines, 500);
-        }
-        else
+            relocateMine(row, col);
+            countAdjacentMines();
             revealTile(row, col);
+            return;
+        }
     }
+    if (board[row][col] === '*') {
+        stopTimer(false);
+        isGameOver = true;
+        finalScore.textContent = "Your score is " + score;
+        setTimeout(() => displayGameOver(false), 2000);
+        clickedTile.textContent = '';
+        clickedTile.classList.add("mine");
+        boardElement.classList.add('disabled');
+        pauseBtn.classList.add('disabled');
+        mineSound.play();
+        restartGameBtns.forEach(btn => btn.classList.add('disabled'));
+        setTimeout(revealMines, 500);
+        return;
+    }
+    revealTile(row, col);
+}
+
+function togglePause(event) {
+    isPaused = !isPaused;
+    isPaused ? stopTimer() : startTimer();
+    boardElement.classList.toggle('disabled');
+    restartGameBtns.forEach(btn => btn.classList.toggle('disabled'));
+    pauseBtn.textContent = pauseBtn.textContent === 'Pause' ? 'Continue' : 'Pause';
+}
+
+function toggleTheme() {
+    themeBtn.textContent = themeBtn.textContent === '☀️' ? '🌙' : '☀️'
+    document.body.classList.toggle('dark-mode');
+    localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
 }
 
 levelSelector.addEventListener("click", handleLevelSelection);
+themeBtn.addEventListener('click', toggleTheme);
 boardElement.addEventListener("click", handleTileClick);
 startGameBtn.addEventListener("click", () => {
     currentView = "level";
     initialize();
 });
+pauseBtn.addEventListener('click', togglePause);
 restartGameBtns.forEach(btn => btn.addEventListener("click", initialize));
+boardElement.addEventListener('contextmenu', event => {
+    event.preventDefault();
+    if (event.target.classList.contains('tile') && !event.target.dataset.revealed) {
+        event.target.textContent = event.target.textContent === '🚩' ? '' : '🚩';
+    }
+})
+
+if (localStorage.getItem('theme') === 'dark') toggleTheme();
 
 initialize();
