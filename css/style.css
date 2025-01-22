@@ -39,7 +39,7 @@ p {
 }
 
 button {
-    background: #4CAF50;
+    background: #0ca311;
     border: none;
     padding: 10px 20px;
     margin: 10px;
@@ -61,8 +61,9 @@ button:hover {
 .tile {
     height: 100%;
     aspect-ratio: 1;
-    background-color: var(--tile-color, #CCC);
+    background-color: var(--tile-color, #B0BEC5);
     border: 1px solid #999;
+    color: #FFF;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -79,23 +80,23 @@ button:hover {
     transform: rotateY(360deg);
 }
 
-.bg-color-0 { --tile-color: darkgray; }
+.bg-color-0 { --tile-color: #E6E6E6; }
 
-.bg-color-1 { --tile-color: blue; }
+.bg-color-1 { --tile-color: #007AFF; }
 
-.bg-color-2 { --tile-color: green; }
+.bg-color-2 { --tile-color: #28A745; }
 
-.bg-color-3 { --tile-color: red; }
+.bg-color-3 { --tile-color: #DC3545; }
 
-.bg-color-4 { --tile-color: purple; }
+.bg-color-4 { --tile-color: #6F42C1; }
 
-.bg-color-5 { --tile-color: maroon; }
+.bg-color-5 { --tile-color: #FD7E14; }
 
-.bg-color-6 { --tile-color: turquoise; }
+.bg-color-6 { --tile-color: #20C997; }
 
-.bg-color-7 { --tile-color: black; }
+.bg-color-7 { --tile-color: #343A40; }
 
-.bg-color-8 { --tile-color: gray; }
+.bg-color-8 { --tile-color: #000000; }
 
 @keyframes shake {
     0% { transform: translateX(0); }
@@ -142,6 +143,29 @@ button:hover {
     opacity: .8;
 }
 
+.score-animate {
+    transform: scale(1.15);
+    transition: transform 0.3s ease-in-out;
+}
+
+@keyframes glow {
+    0% { box-shadow: 0 0 40px rgba(255, 0, 0, 0); }
+    10% { box-shadow: 0 0 36px rgba(255, 0, 0, 0.2); }
+    20% { box-shadow: 0 0 32px rgba(255, 0, 0, 0.4); }
+    30% { box-shadow: 0 0 28px rgba(255, 0, 0, 0.6); }
+    40% { box-shadow: 0 0 24px rgba(255, 0, 0, 0.8); }
+    50% { box-shadow: 0 0 20px rgba(255, 0, 0, 1); }
+    60% { box-shadow: 0 0 16px rgba(255, 0, 0, 1); }
+    70% { box-shadow: 0 0 12px rgba(255, 0, 0, 0.8); }
+    80% { box-shadow: 0 0 8px rgba(255, 0, 0, 0.6); }
+    90% { box-shadow: 0 0 4px rgba(255, 0, 0, 0.4); }
+    100% { box-shadow: 0 0 0px rgba(255, 0, 0, 0.2); }
+}
+
+.hint {
+    animation: glow 3s ease-in-out infinite;
+} 
+
 #game-info {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     display: none;
@@ -184,11 +208,17 @@ button:hover {
 }
 
 #game-board {
+    background-color: #606060;
     grid-template-columns: repeat(var(--board-size), 1fr);
     grid-template-rows: repeat(var(--board-size), 1fr);
     gap: 2px;
 }
 
+#game-over {
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-content: center;
+}
 #game-over button {
     font-family: "VT323", monospace;
     font-size: 3rem;

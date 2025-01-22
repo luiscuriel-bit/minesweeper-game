@@ -11,6 +11,8 @@ const startGameBtn = document.getElementById('start-game');
 const restartGameBtns = document.querySelectorAll(".restart-game");
 const pauseBtn = document.getElementById('pause-toggle');
 const themeBtn = document.getElementById('theme-toggle');
+const musicBtn = document.getElementById('music-toggle');
+const hintBtn = document.getElementById('hint');
 const timer = document.getElementById('timer');
 const highScore = document.getElementById('high-score');
 const levelSelector = document.getElementById("level-selector");
@@ -20,14 +22,23 @@ const gameOverElement = document.getElementById("game-over");
 const scoreElement = document.getElementById("score");
 const gameOverMessage = document.getElementById("game-over-message");
 const finalScore = document.getElementById("final-score");
+
+const introMusic = new Audio("/sounds/intro.mp3");
+const backgroundMusic = new Audio("/sounds/background.mp3");
+const flagSound = new Audio("/sounds/flag.mp3");
 const winSound = new Audio("/sounds/win.mp3");
-const mineSound = new Audio("/sounds/mine.mp3");
+const loseSound = new Audio("/sounds/lose.mp3");
+export const mineSound = new Audio("/sounds/mine.mp3");
+
+introMusic.loop = true;
+backgroundMusic.loop = true;
 
 let isGameOver;
 let currentView = 'instructions'; // 'level', 'instructions', 'game', 'game-over'
 let score;
 let isFirstMove;
 let isPaused;
+let hintUsed;
 let time;
 let timerInterval;
 export let levelConfig;
@@ -36,12 +47,14 @@ export function initialize() {
     isGameOver = false;
     isFirstMove = true;
     isPaused = false;
+    hintUsed = false;
     minesLocation.splice(0, minesLocation.length);
     time = 0;
     timer.textContent = 'Time: 0 s';
     stopTimer();
     boardElement.classList.remove('disabled');
     pauseBtn.classList.remove('disabled');
+    hintBtn.classList.add('disabled');
     if (levelConfig) {
         createBoard();
         addMines();
@@ -62,6 +75,7 @@ export function render() {
             instructions.style.display = 'none';
             boardElement.style.display = 'none';
             gameOverElement.style.display = 'none';
+            introMusic.play();
             break;
         case 'instructions':
             levelSelector.style.display = 'none';
@@ -78,6 +92,8 @@ export function render() {
             instructions.style.display = 'none';
             boardElement.style.display = 'grid';
             gameOverElement.style.display = 'none';
+            introMusic.pause();
+            backgroundMusic.play();
             break;
         case 'game-over':
             levelSelector.style.display = 'none';
@@ -85,6 +101,9 @@ export function render() {
             instructions.style.display = 'none';
             boardElement.style.display = 'none';
             gameOverElement.style.display = 'flex';
+            boardElement.classList.add('disabled');
+            isGameOver = true;
+
             break;
     }
 }
@@ -95,9 +114,15 @@ export function checkWinCondition() {
     const tilesWithoutMines = totalTiles - levelConfig.mines;
     if (tilesWithoutMines === revealedTiles) {
         stopTimer(true);
-        isGameOver = true;
+        currentView = 'game-over';
+        setTimeout(() => {
+            render();
+            displayGameOver(true);
+        }, 500);
         boardElement.classList.add('disabled');
-        setTimeout(() => displayGameOver(true), 500);
+        pauseBtn.classList.add('disabled');
+        hintBtn.classList.add('disabled');
+        restartGameBtns.forEach(btn => btn.classList.add('disabled'));
         return true;
     }
     return false;
@@ -106,15 +131,30 @@ export function checkWinCondition() {
 export function updateScore(reset = false) {
     reset ? score = 0 : score++;
     scoreElement.textContent = `Score: ${score}`;
+    if (!reset) {
+        scoreElement.classList.add("score-animate");
+        setTimeout(() => scoreElement.classList.remove("score-animate"), 300);
+    }
+}
+
+function provideHint() {
+    if (hintUsed) return;
+    hintUsed = true;
+    hintBtn.classList.add('disabled');
+
+    for (let [row, col] of minesLocation) {
+        const tile = document.getElementById(`${row}-${col}`);
+        if (!tile.dataset.revealed) {
+            tile.classList.add("hint");
+            setTimeout(() => tile.classList.remove("hint"), 3000);
+            break;
+        }
+    }
 }
 
 function displayGameOver(playerHasWon) {
-    gameInfo.style.display = "none";
-    boardElement.style.display = "none";
-    gameOverElement.style.display = "flex";
-    gameOverElement.style.flexDirection = "column";
-    gameOverElement.style.justifyContent = "space-evenly";
-    gameOverElement.style.alignContent = "center";
+    backgroundMusic.pause();
+
     if (playerHasWon) {
         winSound.play();
         gameOverMessage.textContent = "YOU WIN!";
@@ -124,8 +164,10 @@ function displayGameOver(playerHasWon) {
             origin: { y: 0.6 }
         });
     }
-    else
+    else {
+        loseSound.play();
         gameOverMessage.textContent = "YOU LOSE!";
+    }
 
     restartGameBtns.forEach(btn => btn.classList.remove('disabled'));
 }
@@ -145,12 +187,14 @@ function stopTimer(playerHasWon) {
 
     isPaused = true;
     let localHighScore = localStorage.getItem('highScore');
+
     if (localHighScore) {
         localHighScore = JSON.parse(localHighScore);
     }
     else {
         localHighScore = {};
     }
+
     if (!localHighScore[levelConfig.level] || localHighScore[levelConfig.level] > time) {
         localHighScore[levelConfig.level] = time;
         localStorage.setItem('highScore', JSON.stringify(localHighScore));
@@ -189,6 +233,7 @@ function handleTileClick(event) {
 
     if (isFirstMove) {
         isFirstMove = false;
+        hintBtn.classList.remove('disabled');
         if (board[row][col] === '*') {
             relocateMine(row, col);
             countAdjacentMines();
@@ -198,16 +243,20 @@ function handleTileClick(event) {
     }
     if (board[row][col] === '*') {
         stopTimer(false);
-        isGameOver = true;
+        currentView = 'game-over';
         finalScore.textContent = "Your score is " + score;
-        setTimeout(() => displayGameOver(false), 2000);
+        setTimeout(() => {
+            render();
+            displayGameOver(false);
+        }, 1000);
         clickedTile.textContent = '';
         clickedTile.classList.add("mine");
         boardElement.classList.add('disabled');
         pauseBtn.classList.add('disabled');
-        mineSound.play();
+        hintBtn.classList.add('disabled');
         restartGameBtns.forEach(btn => btn.classList.add('disabled'));
-        setTimeout(revealMines, 500);
+        mineSound.play();
+        revealMines();
         return;
     }
     revealTile(row, col);
@@ -218,7 +267,9 @@ function togglePause(event) {
     isPaused ? stopTimer() : startTimer();
     boardElement.classList.toggle('disabled');
     restartGameBtns.forEach(btn => btn.classList.toggle('disabled'));
+    !(hintUsed || isFirstMove) ? hintBtn.classList.toggle('disabled') : hintBtn.classList.add('disabled');
     pauseBtn.textContent = pauseBtn.textContent === 'Pause' ? 'Continue' : 'Pause';
+
 }
 
 function toggleTheme() {
@@ -227,22 +278,40 @@ function toggleTheme() {
     localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
 }
 
+function toggleMusic() {
+    if (musicBtn.textContent === '🔇') {
+        musicBtn.textContent = '🔈';
+        backgroundMusic.pause();
+    }
+    else {
+        musicBtn.textContent = '🔇';
+        backgroundMusic.play();
+    }
+}
+
 levelSelector.addEventListener("click", handleLevelSelection);
 themeBtn.addEventListener('click', toggleTheme);
+pauseBtn.addEventListener('click', togglePause);
+musicBtn.addEventListener('click', toggleMusic);
 boardElement.addEventListener("click", handleTileClick);
 startGameBtn.addEventListener("click", () => {
     currentView = "level";
     initialize();
 });
-pauseBtn.addEventListener('click', togglePause);
-restartGameBtns.forEach(btn => btn.addEventListener("click", initialize));
+hintBtn.addEventListener('click', provideHint);
+restartGameBtns.forEach(btn => btn.addEventListener("click", () => {
+    currentView = "game";
+    initialize();
+}));
 boardElement.addEventListener('contextmenu', event => {
     event.preventDefault();
     if (event.target.classList.contains('tile') && !event.target.dataset.revealed) {
         event.target.textContent = event.target.textContent === '🚩' ? '' : '🚩';
     }
+    flagSound.play();
 })
 
 if (localStorage.getItem('theme') === 'dark') toggleTheme();
 
 initialize();
+
