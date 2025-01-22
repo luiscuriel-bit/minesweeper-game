@@ -13,6 +13,7 @@ const pauseBtn = document.getElementById('pause-toggle');
 const themeBtn = document.getElementById('theme-toggle');
 const musicBtn = document.getElementById('music-toggle');
 const hintBtn = document.getElementById('hint');
+const returnToLevelsBtn = document.getElementById("return-to-levels");
 const timer = document.getElementById('timer');
 const highScore = document.getElementById('high-score');
 const levelSelector = document.getElementById("level-selector");
@@ -23,12 +24,12 @@ const scoreElement = document.getElementById("score");
 const gameOverMessage = document.getElementById("game-over-message");
 const finalScore = document.getElementById("final-score");
 
-const introMusic = new Audio("/sounds/intro.mp3");
-const backgroundMusic = new Audio("/sounds/background.mp3");
-const flagSound = new Audio("/sounds/flag.mp3");
-const winSound = new Audio("/sounds/win.mp3");
-const loseSound = new Audio("/sounds/lose.mp3");
-export const mineSound = new Audio("/sounds/mine.mp3");
+const introMusic = new Audio("https://github.com/luiscuriel-bit/minesweeper-game/sounds/intro.mp3?raw=true");
+const backgroundMusic = new Audio("https://github.com/luiscuriel-bit/minesweeper-game/sounds/background.mp3?raw=true");
+const flagSound = new Audio("https://github.com/luiscuriel-bit/minesweeper-game/sounds/flag.mp3?raw=true");
+const winSound = new Audio("https://github.com/luiscuriel-bit/minesweeper-game/sounds/win.mp3?raw=true");
+const loseSound = new Audio("https://github.com/luiscuriel-bit/minesweeper-game/sounds/lose.mp3?raw=true");
+export const mineSound = new Audio("https://github.com/luiscuriel-bit/minesweeper-game/sounds/mine.mp3?raw=true");
 
 introMusic.loop = true;
 backgroundMusic.loop = true;
@@ -303,6 +304,10 @@ restartGameBtns.forEach(btn => btn.addEventListener("click", () => {
     currentView = "game";
     initialize();
 }));
+returnToLevelsBtn.addEventListener("click", () => {
+    currentView = "level";
+    initialize();
+});
 boardElement.addEventListener('contextmenu', event => {
     event.preventDefault();
     if (event.target.classList.contains('tile') && !event.target.dataset.revealed) {

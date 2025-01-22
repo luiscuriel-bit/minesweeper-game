@@ -1,6 +1,6 @@
 import { boardElement, checkWinCondition, levelConfig, mineSound, updateScore } from './game.js';
 
-const revealSound = new Audio("/sounds/pop.mp3");
+const revealSound = new Audio("https://github.com/luiscuriel-bit/minesweeper-game/sounds/pop.mp3?raw=true");
 const adjacentPositions = [[-1, -1], [-1, 0], [-1, 1],
                             [0, -1],          [0, 1],
                             [1, -1], [1, 0],  [1, 1]];
